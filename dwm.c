@@ -428,7 +428,6 @@ attachstack(Client *c)
 	c->mon->stack = c;
 }
 
-// here
 void
 buttonpress(XEvent *e)
 {
@@ -447,59 +446,27 @@ buttonpress(XEvent *e)
 	}
 	if (ev->window == selmon->barwin) {
 		i = x = 0;
-        // get width of tags - x
 		do
 			x += TEXTW(tags[i]);
 		while (ev->x >= x && ++i < LENGTH(tags));
 		if (i < LENGTH(tags)) {
 			click = ClkTagBar;
 			arg.ui = 1 << i;
-#if 1
 
-        // if this press could be a ClkLtSymbol or a ubutton, find out which ubutton idx or clk
-        /*okay, if ev->x < x+LENGTH(ubutton[0]), then we got zeroth button*/
-/*
-        } else if (ev->x < x + ubutton_w + blw){
-            for(i = 0; i < LENGTH(ubuttons); ++i){
-                
-            }
-*/
-
-        // this button code is now working - two fixes necessary
-        // TODO: 9th tag being selected should not highlight ubuttons - prob an issue with ubutton_w and blw - ubutton_w probably needs to be added to blw somewhere
-        // TODO: button text should change to lowcase when selected
-        // TODO: only enable ubuttons if using external monitor - we can just set ubutton_w to 0 and not draw the stuff
-        /*can check if mul mons also - if mons->next*/
-        // no need to check for button clicks if !mons->next - it'll be hidden unless we're using external monitors
-        // just need to ensure that ubutton_w == 0
+        /* no need to check for button clicks if !mons->next - it'll be hidden unless we're using external monitors */
         }else if (mons->next && ev->x < x + ubutton_w){
             unsigned int w_p = 0;
             for(i = 0; i < LENGTH(ubuttons); ++i){
-                /*
-                 * go through adding textw to counter - if we go over x+ubutton_w, we got our idx
-                 * if we go over ev->x, gottem
-                */
-                /*click = TEXTW*/
                 w_p += TEXTW(ubuttons[i]);
-                // we've found our button idx
                 if(ev->x <= x+w_p){
-                    /*idx is i*/
                     click = ClkUbutton_start+i+1;
                     ubutton_activation[i] = !ubutton_activation[i];
-                    // redraw all bars to reflect pressing of the button
+                    /* redraw all bars to reflect pressing of the button */
                     drawbars();
                     break;
                 }
             }
-        /*
-         * for(i = 0; i < LENGTH(ubuttons))
-         * } else if (ev->x < x + )
-        */
-#endif
-        // if ev->xpos is to the left of (the end of the last tag + blw)
-        // if x is left of tags + width of symbol
 		} else if (ev->x < x + ubutton_w + blw)
-            // ltsymbol i think is changing tile mode
 			click = ClkLtSymbol;
 		else if (ev->x > selmon->ww - TEXTW(stext))
 			click = ClkStatusText;
