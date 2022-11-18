@@ -116,7 +116,7 @@ static Key keys[] = {
       { 0,                            0x1008ff03,spawn,          {.v = br_down_cmd} },
 
 
-                                    /* f9 */
+                                      /* f9 */
       { 0,                            0xffc6,    spawn,          {.v = shuffle_wallpaper} },
 
       /* redshift, blueshift */

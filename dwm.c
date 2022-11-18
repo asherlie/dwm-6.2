@@ -453,7 +453,10 @@ buttonpress(XEvent *e)
 			click = ClkTagBar;
 			arg.ui = 1 << i;
 
-        /* no need to check for button clicks if !mons->next - it'll be hidden unless we're using external monitors */
+        /* no need to check for button clicks if !mons->next - it'll be hidden unless we're using external monitors
+         * this feature is meant to be used when unique thinkpad keys are unreachable due to closed laptop
+         * might as well keep bar uncluttered when keyboard is accessible
+         */
         }else if (mons->next && ev->x < x + ubutton_w){
             unsigned int w_p = 0;
             for(i = 0; i < LENGTH(ubuttons); ++i){
@@ -758,9 +761,8 @@ drawbar(Monitor *m)
 	drw_setscheme(drw, scheme[SchemeNorm]);
     if(mons->next){
         for(i = 0; i < LENGTH(ubuttons);  ++i){
-            // TODO: there's no need to keep calculating this
+            /* TODO: there's no need to keep calculating this */
             tmp_ubutton_w += (w =  TEXTW(ubuttons[i]));
-            /*need to set ubutton_w based on total width here*/
             drw_text(drw, x, 0, w, bh, lrpad / 2, ubutton_activation[i] ? lowstr(ubuttons[i], buf) : ubuttons[i], 0);
             x += w;
         }
