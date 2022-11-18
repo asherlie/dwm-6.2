@@ -1750,31 +1750,31 @@ tile(Monitor *m)
 		}
 }
 
-#if 0
-all windows will be of equal size - use nexttiled
+/*
+all windows are be of equal size
 the number of columns can be updated by alt-I and alt-D just like in tile mode
-nmaster will refer to ncolumns i think  i can just reuse it
+
 find the width of each window whhich should be static
 then find the height of each, also static
-#endif
 
-// some bad behavior:
-//  when n_cols == 3 and n == 4
-//  the layout is:
-//      a c |
-//      b d |
-//
-//  when it should be
-//      a c d
-//      b c d
-//
-//  -- only a and b should share a column
-//  all that must be fixed is width of each column, height is properly
-//  calculated based on n_remaining
-//  nvm, don't think this is the problem
-//  widths are correct, clients are just badly moved
-//  they should be stacked only until we can fill
-//  the rest of the windows without stacking
+ some bad behavior:
+  when n_cols == 3 and n == 4
+  the layout is:
+      a c |
+      b d |
+
+  when it should be
+      a c d
+      b c d
+
+  -- only a and b should share a column
+  all that must be fixed is width of each column, height is properly
+  calculated based on n_remaining
+  nvm, don't think this is the problem
+  widths are correct, clients are just badly moved
+  they should be stacked only until we can fill
+  the rest of the windows without stacking
+*/
 void equal_size(Monitor* mon){
 	unsigned int i, n, n_cols = MAX(1, mon->nmaster), height, width, c_per_col, max_c_per_col, col_idx = 0;
     _Bool max_ht = 0;

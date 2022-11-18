@@ -101,30 +101,30 @@ static const char* shuffle_wallpaper[] = {"/home/asher/ashbin/papes/random_pape.
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-      { 0,                            0x1008ff12,spawn,          {.v = mutecmd } },
-      { 0,                            0x1008ff11,spawn,          {.v = vol_dwn_cmd } },
-      { 0,                            0x1008ff13,spawn,          {.v = vol_up_cmd } },
-                                      /* mute mic button */
-      { 0,                            0x1008ffb2, spawn,         {.v = airpod_con} },
-      { MODKEY,                       0x1008ffb2, spawn,         {.v = airpod_dcon} },
-                                      /* thinkvantage button */
-      { 0,                            0x1008ff41, spawn,         {.v = hibernate} },
-        
+    { 0,                            0x1008ff12,spawn,          {.v = mutecmd } },
+    { 0,                            0x1008ff11,spawn,          {.v = vol_dwn_cmd } },
+    { 0,                            0x1008ff13,spawn,          {.v = vol_up_cmd } },
+                                    /* mute mic button */
+    { 0,                            0x1008ffb2, spawn,         {.v = airpod_con} },
+    { MODKEY,                       0x1008ffb2, spawn,         {.v = airpod_dcon} },
+                                    /* thinkvantage button */
+    { 0,                            0x1008ff41, spawn,         {.v = hibernate} },
+      
 
-      /* brightness */
-      { 0,                            0x1008ff02,spawn,          {.v = br_up_cmd} },
-      { 0,                            0x1008ff03,spawn,          {.v = br_down_cmd} },
+    /* brightness */
+    { 0,                            0x1008ff02,spawn,          {.v = br_up_cmd} },
+    { 0,                            0x1008ff03,spawn,          {.v = br_down_cmd} },
 
 
-                                      /* f9 */
-      { 0,                            0xffc6,    spawn,          {.v = shuffle_wallpaper} },
+                                    /* f9 */
+    { 0,                            0xffc6,    spawn,          {.v = shuffle_wallpaper} },
 
-      /* redshift, blueshift */
-      /* PrtSc,    ScrLk*/
-      { 0,                            0xff61,spawn,          {.v = red_cmd} },
-      { 0,                            0xff14,spawn,          {.v = blue_cmd} },
+    /* redshift, blueshift */
+    /* PrtSc,    ScrLk*/
+    { 0,                            0xff61,spawn,          {.v = red_cmd} },
+    { 0,                            0xff14,spawn,          {.v = blue_cmd} },
 
-      /* shift, alt, ' */
+    /* shift, alt, ' */
     { MODKEY|ShiftMask,             0x27      ,spawn,          {.v = sendclip} },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
