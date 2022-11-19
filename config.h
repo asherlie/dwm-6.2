@@ -20,7 +20,7 @@ const _Bool force_ubuttons = 1;
 static const char col_salmon[]      = "#CD928C";
 static const char col_deepblue[]    = "#187E94";
 
-static const char *colors[][3]      = {
+static const char *colors[][4]      = {
 
 
 	/*               fg         bg         border   */
@@ -31,6 +31,7 @@ static const char *colors[][3]      = {
 	[SchemeNorm] = { col_deepblue, col_gray1, col_deepblue},
 	[SchemeSel]  = { col_gray4, col_cyan,  col_salmon},
 #endif
+    [SchemeAlt] = { col_gray1, col_gray3, col_gray2},
 };
 
 /* tagging */
@@ -95,7 +96,7 @@ static const char *termcmd[]  = { "xfce4-terminal", NULL };
 static const char *sendclip[]  = { "/home/asher/sendsel.sh", NULL };
 static const char* airpod_con[] = {"bluetoothctl", "connect", "A4:C6:F0:D7:4E:87", NULL};
 static const char* airpod_dcon[] = {"bluetoothctl", "disconnect", "A4:C6:F0:D7:4E:87", NULL};
-static const char* hibernate[] = {"systemctl", "hibernate", NULL};
+static const char* hibernate[] = {"systemctl", "hybrid-sleep", NULL};
 static const char* shuffle_wallpaper[] = {"/home/asher/ashbin/papes/random_pape.sh", NULL};
 /*
  * i need clickble buttons in the 1-9 bar
@@ -171,7 +172,7 @@ static Key keys[] = {
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
-	{ ClkHib,               0,              Button1,        spawn,          {.v = hibernate} },
+    { ClkHib,               0,              Button1,        spawn,          {.v = hibernate} },
     { ClkPods,              0,              Button1,        spawn,          {.v = airpod_con} },
     { ClkPodsd,             0,              Button1,        spawn,          {.v = airpod_dcon} },
     { ClkWall,              0,              Button1,        spawn,          {.v = shuffle_wallpaper} },
