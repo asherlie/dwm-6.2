@@ -62,7 +62,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeAlt }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
@@ -431,7 +431,7 @@ attachstack(Client *c)
 void
 buttonpress(XEvent *e)
 {
-	unsigned int i, x, click;
+	unsigned int i, x, click, w_p;
 	Arg arg = {0};
 	Client *c;
 	Monitor *m;
@@ -457,8 +457,8 @@ buttonpress(XEvent *e)
          * this feature is meant to be used when unique thinkpad keys are unreachable due to closed laptop
          * might as well keep bar uncluttered when keyboard is accessible
          */
-        }else if (mons->next && ev->x < x + ubutton_w){
-            unsigned int w_p = 0;
+        } else if((force_ubuttons || mons->next) && ev->x < x + ubutton_w){
+            w_p = i;
             for(i = 0; i < LENGTH(ubuttons); ++i){
                 w_p += TEXTW(ubuttons[i]);
                 if(ev->x <= x+w_p){
@@ -758,8 +758,8 @@ drawbar(Monitor *m)
 				urg & 1 << i);
 		x += w;
 	}
-	drw_setscheme(drw, scheme[SchemeNorm]);
-    if(mons->next){
+    if(force_ubuttons || mons->next){
+        drw_setscheme(drw, scheme[SchemeAlt]);
         for(i = 0; i < LENGTH(ubuttons);  ++i){
             /* TODO: there's no need to keep calculating this */
             tmp_ubutton_w += (w =  TEXTW(ubuttons[i]));
@@ -770,7 +770,7 @@ drawbar(Monitor *m)
     ubutton_w = tmp_ubutton_w;
 
 	w = blw = TEXTW(m->ltsymbol);
-	/*drw_setscheme(drw, scheme[SchemeNorm]);*/
+	drw_setscheme(drw, scheme[SchemeNorm]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - sw - x) > bh) {
