@@ -25,11 +25,11 @@ static const char *colors[][4]      = {
 
 	/*               fg         bg         border   */
 #ifndef BACKMATCH
-     [SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-     [SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+    [SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
+    [SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 #else
-	[SchemeNorm] = { col_deepblue, col_gray1, col_deepblue},
-	[SchemeSel]  = { col_gray4, col_cyan,  col_salmon},
+    [SchemeNorm] = { col_deepblue, col_gray1, col_deepblue},
+    [SchemeSel]  = { col_gray4, col_cyan,  col_salmon},
 #endif
     [SchemeAlt] = { col_gray1, col_gray3, col_gray2},
 };
@@ -37,7 +37,7 @@ static const char *colors[][4]      = {
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
-static const char *ubuttons[] = { "HI", "PC", "PD", "WP", "RS", "BS" };
+static const char *ubuttons[] = { "HB", "PC", "PD", "WP", "RS", "BS" };
 _Bool* ubutton_activation;
 
 static const Rule rules[] = {
@@ -96,6 +96,9 @@ static const char *termcmd[]  = { "xfce4-terminal", NULL };
 static const char *sendclip[]  = { "/home/asher/sendsel.sh", NULL };
 static const char* airpod_con[] = {"bluetoothctl", "connect", "A4:C6:F0:D7:4E:87", NULL};
 static const char* airpod_dcon[] = {"bluetoothctl", "disconnect", "A4:C6:F0:D7:4E:87", NULL};
+/* TODO: maybe this should just be systemctl suspend - no need to hibernate
+ * when docked - fn key is also accessible when docked so waking won't be a problem
+ */
 static const char* hibernate[] = {"systemctl", "hybrid-sleep", NULL};
 static const char* shuffle_wallpaper[] = {"/home/asher/ashbin/papes/random_pape.sh", NULL};
 /*
@@ -118,7 +121,6 @@ static Key keys[] = {
     /* brightness */
     { 0,                            0x1008ff02,spawn,          {.v = br_up_cmd} },
     { 0,                            0x1008ff03,spawn,          {.v = br_down_cmd} },
-
 
                                     /* f9 */
     { 0,                            0xffc6,    spawn,          {.v = shuffle_wallpaper} },
