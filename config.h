@@ -15,17 +15,9 @@ static const char col_cyan[]        = "#005577";
 
 /* ubuttons only appear with external monitors if not set */
 const _Bool force_ubuttons = 0;
-// disabled for now, not detecting lack of monitors properly
-// nmons() is returning 3 even when no monitors are connected!
-// for now it'll just be f1, f2
+/* auto laptop/monitor mode */
 const _Bool asher_x220 = 1;
 
-/*
- * this doesn't work, mons->next is only set once dwm detects monitors
- * not the system, need to somehow loop in xrandr
- * maybe there's a c api
- * i can use ~/xr.c!!! to detect monitoooors
-*/
 /* relevant only for asher's home x220 dock setup */
 _Bool docked = 0;
 
@@ -111,6 +103,9 @@ static const char* airpod_con[] = {"bluetoothctl", "connect", "A4:C6:F0:D7:4E:87
 static const char* airpod_dcon[] = {"bluetoothctl", "disconnect", "A4:C6:F0:D7:4E:87", NULL};
 /* TODO: maybe this should just be systemctl suspend - no need to hibernate
  * when docked - fn key is also accessible when docked so waking won't be a problem
+ */
+/* TODO: should this be complete hibernation? we can already 
+ * trigger hybrid-sleep using sleep key - see /etc/systemd/logind.conf
  */
 static const char* hibernate[] = {"systemctl", "hybrid-sleep", NULL};
 static const char* shuffle_wallpaper[] = {"/home/asher/ashbin/papes/random_pape.sh", NULL};

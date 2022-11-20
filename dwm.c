@@ -1649,11 +1649,6 @@ setup(void)
 	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
     /* init ubutton activation */
     ubutton_activation = calloc(sizeof(_Bool), LENGTH(ubuttons));
-    #ifdef ASHER_X220
-    // for now docked will always start as 0, docked status will be
-    // detected in drawbar() and corrected if necessary
-    /*docked = (_Bool)mons->next;*/
-    #endif
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
