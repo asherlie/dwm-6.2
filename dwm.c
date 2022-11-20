@@ -42,6 +42,7 @@
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
+#include <X11/extensions/Xrandr.h>
 #include <X11/Xft/Xft.h>
 
 #include "drw.h"
@@ -459,6 +460,7 @@ buttonpress(XEvent *e)
          */
         } else if((force_ubuttons || mons->next) && ev->x < x + ubutton_w){
             w_p = i;
+            /*hmm, buttons start right before the text, they should start halfway or something*/
             for(i = 0; i < LENGTH(ubuttons); ++i){
                 w_p += TEXTW(ubuttons[i]);
                 if(ev->x <= x+w_p){
@@ -725,6 +727,39 @@ dirtomon(int dir)
 	return m;
 }
 
+int nmons(){
+    int nc = 0;
+    XRROutputInfo* oi;
+    XRRScreenResources* screen = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
+    for(int i = 0; i < screen->noutput; ++i){
+        oi = XRRGetOutputInfo(dpy, screen, screen->outputs[i]);
+        if(!oi->connection)++nc;
+    }
+    return nc;
+}
+
+void run_mon_cmd(_Bool mons){
+    const Arg arg = {.v = mons ? set_mons : set_nomons};
+    spawn(&arg);
+}
+
+_Bool monset(){
+    // update status to docked
+    _Bool ret = 0;
+    int nmonitors = nmons();
+    if(!docked && nmonitors > 1){
+        run_mon_cmd(1);
+        ret = 1;
+        docked = 1;
+    }
+    else if(docked && nmonitors == 1){
+        run_mon_cmd(0);
+        ret = 1;
+        docked = 0;
+    }
+    return ret;
+}
+
 void
 drawbar(Monitor *m)
 {
@@ -735,6 +770,10 @@ drawbar(Monitor *m)
     char buf[50];
 	Client *c;
 
+    /* check if monitors are attached and switch over to them */
+    if(asher_x220){
+        monset();
+    }
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
 		drw_setscheme(drw, scheme[SchemeNorm]);
@@ -787,6 +826,7 @@ drawbar(Monitor *m)
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
 
+// temporarily adding logic to detect monitor connection/disconnection
 void
 drawbars(void)
 {
@@ -1609,6 +1649,11 @@ setup(void)
 	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
     /* init ubutton activation */
     ubutton_activation = calloc(sizeof(_Bool), LENGTH(ubuttons));
+    #ifdef ASHER_X220
+    // for now docked will always start as 0, docked status will be
+    // detected in drawbar() and corrected if necessary
+    /*docked = (_Bool)mons->next;*/
+    #endif
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
