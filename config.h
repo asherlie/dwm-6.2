@@ -14,7 +14,20 @@ static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
 
 /* ubuttons only appear with external monitors if not set */
-const _Bool force_ubuttons = 1;
+const _Bool force_ubuttons = 0;
+// disabled for now, not detecting lack of monitors properly
+// nmons() is returning 3 even when no monitors are connected!
+// for now it'll just be f1, f2
+const _Bool asher_x220 = 1;
+
+/*
+ * this doesn't work, mons->next is only set once dwm detects monitors
+ * not the system, need to somehow loop in xrandr
+ * maybe there's a c api
+ * i can use ~/xr.c!!! to detect monitoooors
+*/
+/* relevant only for asher's home x220 dock setup */
+_Bool docked = 0;
 
 /* colors that match background to play around with */
 static const char col_salmon[]      = "#CD928C";
@@ -101,6 +114,9 @@ static const char* airpod_dcon[] = {"bluetoothctl", "disconnect", "A4:C6:F0:D7:4
  */
 static const char* hibernate[] = {"systemctl", "hybrid-sleep", NULL};
 static const char* shuffle_wallpaper[] = {"/home/asher/ashbin/papes/random_pape.sh", NULL};
+
+static const char* set_mons[] = {"/home/asher/ashbin/mon/mon.sh"};
+static const char* set_nomons[] = {"/home/asher/ashbin/mon/lap.sh"};
 /*
  * i need clickble buttons in the 1-9 bar
  * sleep/hibernate, airpods toggle
@@ -124,6 +140,11 @@ static Key keys[] = {
 
                                     /* f9 */
     { 0,                            0xffc6,    spawn,          {.v = shuffle_wallpaper} },
+    /* mon/lap modes must exist */  
+    /* on both laptop/keyboard */   /* f1 */
+    { 0,                            0xffbe,    spawn,          {.v = set_mons} },
+                                    /* f2 */
+    { 0,                            0xffbf,    spawn,          {.v = set_nomons} },
 
     /* redshift, blueshift */
     /* PrtSc,    ScrLk*/
