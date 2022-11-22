@@ -26,8 +26,6 @@ static const char col_salmon[]      = "#CD928C";
 static const char col_deepblue[]    = "#187E94";
 
 static const char *colors[][4]      = {
-
-
 	/*               fg         bg         border   */
 #ifndef BACKMATCH
     [SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -82,29 +80,12 @@ static const Layout layouts[] = {
 
 /* commands */
 
-// TODO: need a way to alter brightness using redshift -O __ -P -b .4
-// this will let us change brightness of monitor while maintaining redshift value brightness cmd with this!
-// can just store current rs value and reapply it whenever we invoke the brightness commands
-// can also replace current brightness with this if it works without monitors
-// YES IT DOES WORK!!!
-// can just replace brightness cmd with this!
 static const char* mutecmd[] = { "/home/asher/bin/alsa_t/alsa_t", NULL };
 static const char* vol_up_cmd[]  = { "amixer", "-q", "sset", "Master", "10%+", NULL };
 static const char* vol_dwn_cmd[] = { "amixer", "-q", "sset", "Master", "10%-", NULL };
 
-// if new doesn't work for laptop mode, damn
 static const char* br_up_cmd[] = { "/home/asher/ashbin/br/br", "i", "0.1", NULL };
 static const char* br_down_cmd[] = { "/home/asher/ashbin/br/br", "d", "0.1", NULL };
-
-/*
- * static const char* mon_br_up_cmd[] = { "/home/asher/ashbin/br/br", "i", "100", NULL };
- * static const char* mon_br_down_cmd[] = { "/home/asher/ashbin/br/br", "d", "100", NULL };
-*/
-
-/*
- * static const char* red_cmd[] = { "redshift", "-O", "3500", "-P", NULL };
- * static const char* blue_cmd[] = { "redshift", "-O", "6500", "-P", NULL };
-*/
 
 static const char* red_cmd[] = { "/home/asher/ashbin/br/br", "r", "_", NULL};
 static const char* blue_cmd[] = { "/home/asher/ashbin/br/br", "b", "_", NULL};
