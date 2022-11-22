@@ -42,7 +42,7 @@ static const char *colors[][4]      = {
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
-static const char *ubuttons[] = { "HB", "PC", "PD", "WP", "RS", "BS" };
+static const char *ubuttons[] = { "HB", "PC", "PD", "WP", "RS", "BS", "BR-U", "BR-D"};
 _Bool* ubutton_activation;
 
 static const Rule rules[] = {
@@ -66,7 +66,7 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
-	{ "[==]",      equal_size},
+	{ "[==]",     equal_size},
 };
 
 /* key definitions */
@@ -82,15 +82,32 @@ static const Layout layouts[] = {
 
 /* commands */
 
+// TODO: need a way to alter brightness using redshift -O __ -P -b .4
+// this will let us change brightness of monitor while maintaining redshift value brightness cmd with this!
+// can just store current rs value and reapply it whenever we invoke the brightness commands
+// can also replace current brightness with this if it works without monitors
+// YES IT DOES WORK!!!
+// can just replace brightness cmd with this!
 static const char* mutecmd[] = { "/home/asher/bin/alsa_t/alsa_t", NULL };
 static const char* vol_up_cmd[]  = { "amixer", "-q", "sset", "Master", "10%+", NULL };
 static const char* vol_dwn_cmd[] = { "amixer", "-q", "sset", "Master", "10%-", NULL };
 
-static const char* br_up_cmd[] = { "/home/asher/ashbin/br/br", "i", "100", NULL };
-static const char* br_down_cmd[] = { "/home/asher/ashbin/br/br", "d", "100", NULL };
+// if new doesn't work for laptop mode, damn
+static const char* br_up_cmd[] = { "/home/asher/ashbin/br/br", "i", "0.1", NULL };
+static const char* br_down_cmd[] = { "/home/asher/ashbin/br/br", "d", "0.1", NULL };
 
-static const char* red_cmd[] = { "redshift", "-O", "3500", "-P", NULL };
-static const char* blue_cmd[] = { "redshift", "-O", "6500", "-P", NULL };
+/*
+ * static const char* mon_br_up_cmd[] = { "/home/asher/ashbin/br/br", "i", "100", NULL };
+ * static const char* mon_br_down_cmd[] = { "/home/asher/ashbin/br/br", "d", "100", NULL };
+*/
+
+/*
+ * static const char* red_cmd[] = { "redshift", "-O", "3500", "-P", NULL };
+ * static const char* blue_cmd[] = { "redshift", "-O", "6500", "-P", NULL };
+*/
+
+static const char* red_cmd[] = { "/home/asher/ashbin/br/br", "r", "_", NULL};
+static const char* blue_cmd[] = { "/home/asher/ashbin/br/br", "b", "_", NULL};
 
 static const char* browser_cmd[] = { "chromium", NULL };
 static const char* incog_browser_cmd[] = { "chromium", "--incognito", NULL };
@@ -196,6 +213,8 @@ static Button buttons[] = {
     { ClkWall,              0,              Button1,        spawn,          {.v = shuffle_wallpaper} },
     { ClkRed,               0,              Button1,        spawn,          {.v = red_cmd} },
     { ClkBlueSwiss,         0,              Button1,        spawn,          {.v = blue_cmd} },
+    { ClkBrUp,              0,              Button1,        spawn,          {.v = br_up_cmd} },
+    { ClkBrDwn,             0,              Button1,        spawn,          {.v = br_down_cmd} },
 
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
