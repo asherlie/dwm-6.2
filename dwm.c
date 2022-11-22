@@ -69,7 +69,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkUbutton_start, ClkHib, ClkPods, ClkPodsd,
-       ClkWall, ClkRed, ClkBlueSwiss, ClkUbutton_end, ClkStatusText, ClkWinTitle,
+       ClkWall, ClkRed, ClkBlueSwiss, ClkBrUp, ClkBrDwn, ClkUbutton_end, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
@@ -744,7 +744,6 @@ void run_mon_cmd(_Bool mons){
 }
 
 _Bool monset(){
-    // update status to docked
     _Bool ret = 0;
     int nmonitors = nmons();
     if(!docked && nmonitors > 1){
