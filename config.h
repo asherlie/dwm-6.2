@@ -193,7 +193,7 @@ static Button buttons[] = {
     { ClkPodsd,             0,              Button1,        spawn,          {.v = airpod_dcon} },
     { ClkWall,              0,              Button1,        spawn,          {.v = shuffle_wallpaper} },
     { ClkRed,               0,              Button1,        spawn,          {.v = red_cmd} },
-    { ClkBlueSwiss,         0,              Button1,        spawn,          {.v = blue_cmd} },
+    { ClkBlue,              0,              Button1,        spawn,          {.v = blue_cmd} },
     { ClkBrUp,              0,              Button1,        spawn,          {.v = br_up_cmd} },
     { ClkBrDwn,             0,              Button1,        spawn,          {.v = br_down_cmd} },
 

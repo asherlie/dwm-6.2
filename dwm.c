@@ -69,7 +69,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkUbutton_start, ClkHib, ClkPods, ClkPodsd,
-       ClkWall, ClkRed, ClkBlueSwiss, ClkBrUp, ClkBrDwn, ClkUbutton_end, ClkStatusText, ClkWinTitle,
+       ClkWall, ClkRed, ClkBlue, ClkBrUp, ClkBrDwn, ClkUbutton_end, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
