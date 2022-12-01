@@ -20,7 +20,6 @@
  *
  * To understand everything else, start reading main().
  */
-#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <locale.h>
@@ -68,8 +67,8 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
-enum { ClkTagBar, ClkLtSymbol, ClkUbutton_start, ClkHib, ClkPods, ClkPodsd,
-       ClkWall, ClkRed, ClkBlue, ClkBrUp, ClkBrDwn, ClkUbutton_end, ClkStatusText, ClkWinTitle,
+enum { ClkTagBar, ClkLtSymbol, ClkUbutton_start, /*ClkHib,*//* ClkPods, ClkPodsd,
+       ClkWall, ClkRed, ClkBlue, ClkBrUp, ClkBrDwn, ClkUbutton_xxx, ClkUbutton_end,*/ ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
@@ -204,6 +203,7 @@ static void sendmon(Client *c, Monitor *m);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
+static void press_ubutton(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
@@ -462,10 +462,14 @@ buttonpress(XEvent *e)
             w_p = i;
             /*hmm, buttons start right before the text, they should start halfway or something*/
             for(i = 0; i < LENGTH(ubuttons); ++i){
-                w_p += TEXTW(ubuttons[i]);
+                w_p += TEXTW(ubuttons[i].ub_txt);
                 if(ev->x <= x+w_p){
+                    // for now trying out new method
                     click = ClkUbutton_start+i+1;
-                    ubutton_activation[i] = !ubutton_activation[i];
+                    click = ClkUbutton_start;
+                    cur_ubutton_press = i;
+                    ubuttons[i].activated = !ubuttons[i].activated;
+                    /*ubutton_activation[i] = !ubutton_activation[i];*/
                     /* redraw all bars to reflect pressing of the button */
                     drawbars();
                     break;
@@ -525,7 +529,7 @@ cleanup(void)
 	XSync(dpy, False);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
-    free(ubutton_activation);
+    /*free(ubutton_activation);*/
 }
 
 void
@@ -800,8 +804,8 @@ drawbar(Monitor *m)
         drw_setscheme(drw, scheme[SchemeAlt]);
         for(i = 0; i < LENGTH(ubuttons);  ++i){
             /* TODO: there's no need to keep calculating this */
-            tmp_ubutton_w += (w =  TEXTW(ubuttons[i]));
-            drw_text(drw, x, 0, w, bh, lrpad / 2, ubutton_activation[i] ? lowstr(ubuttons[i], buf) : ubuttons[i], 0);
+            tmp_ubutton_w += (w =  TEXTW(ubuttons[i].ub_txt));
+            drw_text(drw, x, 0, w, bh, lrpad / 2, ubuttons[i].activated ? lowstr(ubuttons[i].ub_txt, buf) : ubuttons[i].ub_txt, 0);
             x += w;
         }
     }
@@ -1581,6 +1585,14 @@ setfullscreen(Client *c, int fullscreen)
 	}
 }
 
+void press_ubutton(const Arg* arg){
+    Arg a;
+    if(cur_ubutton_press == -1)return;
+    a.v = ubuttons[cur_ubutton_press].uaction;
+    spawn(&a);
+    cur_ubutton_press = -1;
+}
+
 void
 setlayout(const Arg *arg)
 {
@@ -1647,7 +1659,7 @@ setup(void)
 	netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
 	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
     /* init ubutton activation */
-    ubutton_activation = calloc(sizeof(_Bool), LENGTH(ubuttons));
+    /*ubutton_activation = calloc(sizeof(_Bool), LENGTH(ubuttons));*/
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
@@ -2347,7 +2359,6 @@ main(int argc, char *argv[])
 		fputs("warning: no locale support\n", stderr);
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
-    assert(LENGTH(ubuttons) == ClkUbutton_end-ClkUbutton_start-1);
 	checkotherwm();
 	setup();
 #ifdef __OpenBSD__
