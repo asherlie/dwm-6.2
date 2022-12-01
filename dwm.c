@@ -67,9 +67,8 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
-enum { ClkTagBar, ClkLtSymbol, ClkUbutton_start, /*ClkHib,*//* ClkPods, ClkPodsd,
-       ClkWall, ClkRed, ClkBlue, ClkBrUp, ClkBrDwn, ClkUbutton_xxx, ClkUbutton_end,*/ ClkStatusText, ClkWinTitle,
-       ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+enum { ClkTagBar, ClkLtSymbol, ClkUbutton, ClkStatusText, 
+       ClkWinTitle, ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
 	int i;
@@ -464,12 +463,9 @@ buttonpress(XEvent *e)
             for(i = 0; i < LENGTH(ubuttons); ++i){
                 w_p += TEXTW(ubuttons[i].ub_txt);
                 if(ev->x <= x+w_p){
-                    // for now trying out new method
-                    click = ClkUbutton_start+i+1;
-                    click = ClkUbutton_start;
+                    click = ClkUbutton;
                     cur_ubutton_press = i;
                     ubuttons[i].activated = !ubuttons[i].activated;
-                    /*ubutton_activation[i] = !ubutton_activation[i];*/
                     /* redraw all bars to reflect pressing of the button */
                     drawbars();
                     break;
@@ -529,7 +525,6 @@ cleanup(void)
 	XSync(dpy, False);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
-    /*free(ubutton_activation);*/
 }
 
 void
@@ -1658,8 +1653,6 @@ setup(void)
 	netatom[NetWMWindowType] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
 	netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
 	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
-    /* init ubutton activation */
-    /*ubutton_activation = calloc(sizeof(_Bool), LENGTH(ubuttons));*/
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
