@@ -21,13 +21,12 @@ struct ubuttons_t{
 
 /* ubuttons only appear with external monitors if not set */
 const _Bool force_ubuttons = 0;
+int cur_ubutton_press = -1;
 /* auto laptop/monitor mode */
 const _Bool asher_x220 = 1;
 
 /* relevant only for asher's home x220 dock setup */
 _Bool docked = 0;
-
-int cur_ubutton_press = -1;
 
 /* colors that match background to play around with */
 static const char col_salmon[]      = "#CD928C";
@@ -206,18 +205,6 @@ static Key keys[] = {
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
-    //{ ClkHib,               0,              Button1,        spawn,          {.v = hibernate} },
-    #if 0
-    { ClkPods,              0,              Button1,        spawn,          {.v = airpod_con} },
-    { ClkPodsd,             0,              Button1,        spawn,          {.v = airpod_dcon} },
-    { ClkWall,              0,              Button1,        spawn,          {.v = shuffle_wallpaper} },
-    { ClkRed,               0,              Button1,        spawn,          {.v = red_cmd} },
-    { ClkBlue,              0,              Button1,        spawn,          {.v = blue_cmd} },
-    { ClkBrUp,              0,              Button1,        spawn,          {.v = br_up_cmd} },
-    { ClkBrDwn,             0,              Button1,        spawn,          {.v = br_down_cmd} },
-    #endif
-    // need to always return this on ubutton press and set int cur_ubutton, which will
-    // be an idx for which ubutton to activate
     { ClkUbutton,           0,              Button1,        press_ubutton,  {.v = 0} },
 
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
