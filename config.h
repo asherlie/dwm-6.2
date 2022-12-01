@@ -218,7 +218,7 @@ static Button buttons[] = {
     #endif
     // need to always return this on ubutton press and set int cur_ubutton, which will
     // be an idx for which ubutton to activate
-    { ClkUbutton_start,     0,              Button1,        press_ubutton,  {.v = 0} },
+    { ClkUbutton,           0,              Button1,        press_ubutton,  {.v = 0} },
 
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
