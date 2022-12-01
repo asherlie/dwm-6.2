@@ -13,6 +13,12 @@ static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
 
+struct ubuttons_t{
+    const char* ub_txt;
+    const char** uaction;
+    _Bool activated;
+};
+
 /* ubuttons only appear with external monitors if not set */
 const _Bool force_ubuttons = 0;
 /* auto laptop/monitor mode */
@@ -20,6 +26,8 @@ const _Bool asher_x220 = 1;
 
 /* relevant only for asher's home x220 dock setup */
 _Bool docked = 0;
+
+int cur_ubutton_press = -1;
 
 /* colors that match background to play around with */
 static const char col_salmon[]      = "#CD928C";
@@ -40,8 +48,6 @@ static const char *colors[][4]      = {
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
-static const char *ubuttons[] = { "HB", "PC", "PD", "WP", "RS", "BS", "BR-U", "BR-D"};
-_Bool* ubutton_activation;
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -108,12 +114,24 @@ static const char* airpod_dcon[] = {"bluetoothctl", "disconnect", "A4:C6:F0:D7:4
 static const char* hibernate[] = {"systemctl", "hybrid-sleep", NULL};
 static const char* shuffle_wallpaper[] = {"/home/asher/ashbin/papes/random_pape.sh", NULL};
 
+static const char* vpn_connect[] = {"echo", "vpn_con", ">>", "~/vpn_log", NULL};
+static const char* vpn_disconnect[] = {"echo", "vpn_dcon", ">>", "~/vpn_log", NULL};
+
+/* TODO: should these be NULL terminated? */
 static const char* set_mons[] = {"/home/asher/ashbin/mon/mon.sh"};
 static const char* set_nomons[] = {"/home/asher/ashbin/mon/lap.sh"};
-/*
- * i need clickble buttons in the 1-9 bar
- * sleep/hibernate, airpods toggle
-*/
+
+static struct ubuttons_t ubuttons[] = {
+    {.ub_txt = "PC", .uaction = airpod_con, .activated = 0},
+    {.ub_txt = "PD", .uaction = airpod_dcon, .activated = 0},
+    {.ub_txt = "WP", .uaction = shuffle_wallpaper, .activated = 0},
+    {.ub_txt = "RS", .uaction = red_cmd, .activated = 0},
+    {.ub_txt = "BS", .uaction = blue_cmd, .activated = 0},
+    {.ub_txt = "BR-U", .uaction = br_up_cmd, .activated = 0},
+    {.ub_txt = "BR-D", .uaction = br_down_cmd, .activated = 0},
+    {.ub_txt = "VPN-C", .uaction = vpn_connect, .activated = 0},
+    {.ub_txt = "VPN-D", .uaction = vpn_disconnect, .activated = 0},
+};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -188,7 +206,8 @@ static Key keys[] = {
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
-    { ClkHib,               0,              Button1,        spawn,          {.v = hibernate} },
+    //{ ClkHib,               0,              Button1,        spawn,          {.v = hibernate} },
+    #if 0
     { ClkPods,              0,              Button1,        spawn,          {.v = airpod_con} },
     { ClkPodsd,             0,              Button1,        spawn,          {.v = airpod_dcon} },
     { ClkWall,              0,              Button1,        spawn,          {.v = shuffle_wallpaper} },
@@ -196,6 +215,10 @@ static Button buttons[] = {
     { ClkBlue,              0,              Button1,        spawn,          {.v = blue_cmd} },
     { ClkBrUp,              0,              Button1,        spawn,          {.v = br_up_cmd} },
     { ClkBrDwn,             0,              Button1,        spawn,          {.v = br_down_cmd} },
+    #endif
+    // need to always return this on ubutton press and set int cur_ubutton, which will
+    // be an idx for which ubutton to activate
+    { ClkUbutton_start,     0,              Button1,        press_ubutton,  {.v = 0} },
 
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
@@ -209,4 +232,3 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-
