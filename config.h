@@ -101,7 +101,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "xfce4-terminal", NULL };
 
-static const char *sendclip[]  = { "/home/asher/sendsel.sh", NULL };
+static const char* sendclip[]  = { "/home/asher/sendsel.sh", NULL };
 static const char* airpod_con[] = {"bluetoothctl", "connect", "A4:C6:F0:D7:4E:87", NULL};
 static const char* airpod_dcon[] = {"bluetoothctl", "disconnect", "A4:C6:F0:D7:4E:87", NULL};
 /* TODO: maybe this should just be systemctl suspend - no need to hibernate
@@ -121,15 +121,15 @@ static const char* set_mons[] = {"/home/asher/ashbin/mon/mon.sh"};
 static const char* set_nomons[] = {"/home/asher/ashbin/mon/lap.sh"};
 
 static struct ubuttons_t ubuttons[] = {
-    {.ub_txt = "PC", .uaction = airpod_con, .activated = 0},
-    {.ub_txt = "PD", .uaction = airpod_dcon, .activated = 0},
-    {.ub_txt = "WP", .uaction = shuffle_wallpaper, .activated = 0},
-    {.ub_txt = "RS", .uaction = red_cmd, .activated = 0},
-    {.ub_txt = "BS", .uaction = blue_cmd, .activated = 0},
-    {.ub_txt = "BR-U", .uaction = br_up_cmd, .activated = 0},
-    {.ub_txt = "BR-D", .uaction = br_down_cmd, .activated = 0},
-    {.ub_txt = "VPN-C", .uaction = vpn_connect, .activated = 0},
-    {.ub_txt = "VPN-D", .uaction = vpn_disconnect, .activated = 0},
+    {.ub_txt = "PC",    .uaction = airpod_con,        .activated = 0},
+    {.ub_txt = "PD",    .uaction = airpod_dcon,       .activated = 0},
+    {.ub_txt = "WP",    .uaction = shuffle_wallpaper, .activated = 0},
+    {.ub_txt = "RS",    .uaction = red_cmd,           .activated = 0},
+    {.ub_txt = "BS",    .uaction = blue_cmd,          .activated = 0},
+    {.ub_txt = "BR-U",  .uaction = br_up_cmd,         .activated = 0},
+    {.ub_txt = "BR-D",  .uaction = br_down_cmd,       .activated = 0},
+    {.ub_txt = "VPN-C", .uaction = vpn_connect,       .activated = 0},
+    {.ub_txt = "VPN-D", .uaction = vpn_disconnect,    .activated = 0},
 };
 
 static Key keys[] = {
