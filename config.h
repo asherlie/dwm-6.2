@@ -12,15 +12,21 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
+static const char ubuttoncfg[]      = "/home/asher/ashbin/ubutton.cfg";
 
-struct ubuttons_t{
+struct ubutton_t{
     const char* ub_txt;
     const char** uaction;
     _Bool activated;
 };
 
+struct ubuttons{
+    int len, cap;
+    struct ubutton_t* buttons;
+};
+
 /* ubuttons only appear with external monitors if not set */
-const _Bool force_ubuttons = 0;
+const _Bool force_ubuttons = 1;
 int cur_ubutton_press = -1;
 /* auto laptop/monitor mode */
 const _Bool asher_x220 = 1;
@@ -121,7 +127,11 @@ static const char* vpn_disconnect[] = {"echo", "vpn_dcon", ">>", "~/vpn_log", NU
 static const char* set_mons[] = {"/home/asher/ashbin/mon/mon.sh"};
 static const char* set_nomons[] = {"/home/asher/ashbin/mon/lap.sh"};
 
-static struct ubuttons_t ubuttons[] = {
+// read this in from a file
+// the only default ubutton will be refresh_ubuttons
+struct ubuttons ubuttons = {0};
+
+static struct ubutton_t c_ubuttons[] = {
     {.ub_txt = "PC",    .uaction = airpod_con,        .activated = 0},
     {.ub_txt = "PD",    .uaction = airpod_dcon,       .activated = 0},
     {.ub_txt = "V-U",   .uaction = vol_up_cmd,        .activated = 0},
