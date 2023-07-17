@@ -18,6 +18,7 @@ struct ubutton_t{
     const char* ub_txt;
     const char** uaction;
     _Bool activated;
+    _Bool allocated;
 };
 
 struct ubuttons{
