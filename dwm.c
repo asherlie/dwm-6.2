@@ -279,6 +279,87 @@ static Window root, wmcheckwin;
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
+/* initializes ubuttons with the read_cfg button
+ * followed by cfg defined buttons
+ */
+                    // okay, we'll hardcode a value of either 0 or INTMAX to be read extra UB cfg
+    /*{.ub_txt = "PC",    .uaction = airpod_con,        .activated = 0},*/
+
+void insert_ubutton(const char* ub_txt, const char** uaction){
+    if(ubuttons.len == ubuttons.cap){
+        ubuttons.cap *= 2;
+        ubuttons.buttons = realloc(ubuttons.buttons, ubuttons.cap);
+    }
+    ubuttons.buttons[ubuttons.len].ub_txt = ub_txt;
+    ubuttons.buttons[ubuttons.len].uaction = uaction;
+    ubuttons.buttons[ubuttons.len++].activated = 0;
+}
+
+void init_ubuttons(int cap){
+    if(ubuttons.buttons){
+        /* free memory for non-c_ubuttons defined ubuttons */
+        for(int i = 1+LENGTH(c_ubuttons); i < ubuttons.len; ++i){
+            free((char*)ubuttons.buttons[i].ub_txt);
+            if(ubuttons.buttons[i].uaction){
+                for(const char** j = ubuttons.buttons[i].uaction; *j; ++j){
+                    free((char*)*j);
+                }
+                free(ubuttons.buttons[i].uaction);
+            }
+        }
+        free(ubuttons.buttons);
+    }
+    ubuttons.len = 0;
+    ubuttons.cap = MAX(cap, ubuttons.cap);
+    ubuttons.buttons = malloc(sizeof(struct ubutton_t)*cap);
+
+    insert_ubutton("***", NULL);
+}
+
+void update_ubuttons(){
+    FILE* fp = fopen(ubuttoncfg, "r");
+    char* ln = NULL, * ub_txt, * uaction, * cursor;
+    const char** adj_uaction;
+    size_t sz;
+    int br, uact_len, ua_cap;
+
+    if(!fp)return;
+
+    init_ubuttons(10);
+
+    for(int i = 0; i < LENGTH(c_ubuttons); ++i){
+        insert_ubutton(c_ubuttons[i].ub_txt, c_ubuttons[i].uaction);
+    }
+
+    while((br = getline(&ln, &sz, fp)) != EOF){
+        if(ln[br-1] == '\n')ln[--br] = 0;
+        ub_txt = ln;
+        uaction = strchr(ln, ' ');
+        if(!uaction)continue;
+        /* adding a \0 to terminate ub_txt */
+        *uaction = 0;
+        ++uaction;
+        cursor = uaction;
+        ua_cap = 20;
+        adj_uaction = calloc(sizeof(char*), ua_cap);
+        for(uact_len = 1; (cursor = strchr(uaction, ' ')); ++uact_len){
+            *cursor = 0;
+            if(uact_len == ua_cap){
+                ua_cap *= 2;
+                adj_uaction = realloc(adj_uaction, ua_cap);
+                memset(adj_uaction+uact_len, 0, (ua_cap)*sizeof(char*));
+            }
+            adj_uaction[uact_len-1] = strdup(uaction);
+            uaction = cursor+1;
+        }
+        adj_uaction[uact_len-1] = strdup(uaction);
+
+        insert_ubutton(strdup(ub_txt), adj_uaction);
+    }
+    drawbars();
+    fclose(fp);
+}
+
 char* lowstr(const char* s, char* buf){
     int i;
     for(i = 0; s[i]; ++i){
@@ -460,13 +541,15 @@ buttonpress(XEvent *e)
         } else if((force_ubuttons || mons->next) && ev->x < x + ubutton_w){
             w_p = i;
             /*hmm, buttons start right before the text, they should start halfway or something*/
-            for(i = 0; i < LENGTH(ubuttons); ++i){
-                w_p += TEXTW(ubuttons[i].ub_txt);
+            /*for(i = 0; i < LENGTH(ubuttons); ++i){*/
+            for(i = 0; i < ubuttons.len; ++i){
+                w_p += TEXTW(ubuttons.buttons[i].ub_txt);
                 if(ev->x <= x+w_p){
                     click = ClkUbutton;
                     cur_ubutton_press = i;
-                    ubuttons[i].activated = !ubuttons[i].activated;
+                    ubuttons.buttons[i].activated = !ubuttons.buttons[i].activated;
                     /* redraw all bars to reflect pressing of the button */
+                    // okay, we'll hardcode a value of either 0 or INTMAX to be read extra UB cfg
                     drawbars();
                     break;
                 }
@@ -795,12 +878,14 @@ drawbar(Monitor *m)
 				urg & 1 << i);
 		x += w;
 	}
+    // TODO: i should have a flash when i switch monitors
     if(force_ubuttons || mons->next){
         drw_setscheme(drw, scheme[SchemeAlt]);
-        for(i = 0; i < LENGTH(ubuttons);  ++i){
+        /*for(i = 0; i < LENGTH(ubuttons);  ++i){*/
+        for(i = 0; i < ubuttons.len; ++i){
             /* TODO: there's no need to keep calculating this */
-            tmp_ubutton_w += (w =  TEXTW(ubuttons[i].ub_txt));
-            drw_text(drw, x, 0, w, bh, lrpad / 2, ubuttons[i].activated ? lowstr(ubuttons[i].ub_txt, buf) : ubuttons[i].ub_txt, 0);
+            tmp_ubutton_w += (w =  TEXTW(ubuttons.buttons[i].ub_txt));
+            drw_text(drw, x, 0, w, bh, lrpad / 2, ubuttons.buttons[i].activated ? lowstr(ubuttons.buttons[i].ub_txt, buf) : ubuttons.buttons[i].ub_txt, 0);
             x += w;
         }
     }
@@ -897,6 +982,14 @@ focusin(XEvent *e)
 	if (selmon->sel && ev->window != selmon->sel->win)
 		setfocus(selmon->sel);
 }
+
+/*
+ * void drawrect(int x, int y, int width, int bwidth){
+ *     XRectangle rect[4] = {
+ *         
+ *     }
+ * }
+*/
 
 void
 focusmon(const Arg *arg)
@@ -1583,7 +1676,11 @@ setfullscreen(Client *c, int fullscreen)
 void press_ubutton(const Arg* arg){
     Arg a;
     if(cur_ubutton_press == -1)return;
-    a.v = ubuttons[cur_ubutton_press].uaction;
+    /* first ubutton is always read_cfg */
+    if(cur_ubutton_press == 0){
+        update_ubuttons();
+    }
+    a.v = ubuttons.buttons[cur_ubutton_press].uaction;
     spawn(&a);
     cur_ubutton_press = -1;
 }
@@ -1685,6 +1782,7 @@ setup(void)
 	XSelectInput(dpy, root, wa.event_mask);
 	grabkeys();
 	focus(NULL);
+	update_ubuttons();
 }
 
 
