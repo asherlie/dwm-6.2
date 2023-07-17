@@ -537,8 +537,7 @@ buttonpress(XEvent *e)
          */
         } else if((force_ubuttons || mons->next) && ev->x < x + ubutton_w){
             w_p = i;
-            /*hmm, buttons start right before the text, they should start halfway or something*/
-            /*for(i = 0; i < LENGTH(ubuttons); ++i){*/
+            /* hmm, buttons start right before the text, they should start halfway or something */
             for(i = 0; i < ubuttons.len; ++i){
                 w_p += TEXTW(ubuttons.buttons[i].ub_txt);
                 if(ev->x <= x+w_p){
@@ -546,7 +545,6 @@ buttonpress(XEvent *e)
                     cur_ubutton_press = i;
                     ubuttons.buttons[i].activated = !ubuttons.buttons[i].activated;
                     /* redraw all bars to reflect pressing of the button */
-                    // okay, we'll hardcode a value of either 0 or INTMAX to be read extra UB cfg
                     drawbars();
                     break;
                 }
@@ -878,7 +876,6 @@ drawbar(Monitor *m)
     // TODO: i should have a flash when i switch monitors
     if(force_ubuttons || mons->next){
         drw_setscheme(drw, scheme[SchemeAlt]);
-        /*for(i = 0; i < LENGTH(ubuttons);  ++i){*/
         for(i = 0; i < ubuttons.len; ++i){
             /* TODO: there's no need to keep calculating this */
             tmp_ubutton_w += (w =  TEXTW(ubuttons.buttons[i].ub_txt));
