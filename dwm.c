@@ -279,30 +279,50 @@ static Window root, wmcheckwin;
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
+void free_uaction(const char** uaction){
+    for(const char** i = uaction; *i; ++i){
+        free((char*)*i);
+    }
+    free(uaction);
+}
+
 /* initializes ubuttons with the read_cfg ubutton
  * followed by config.h ubuttons, followed by cfg defined ubuttons
  */
-void insert_ubutton(const char* ub_txt, const char** uaction){
+void insert_ubutton(const char* ub_txt, const char** uaction, _Bool allocated){
+    /* button 0 cannot be overwritten */
+    for(int i = 1; i < ubuttons.len; ++i){
+        if(!strcmp(ubuttons.buttons[i].ub_txt, ub_txt)){
+            if(ubuttons.buttons[i].allocated){
+                free_uaction(ubuttons.buttons[i].uaction);
+            }
+            if(allocated){
+                ubuttons.buttons[i].allocated = 1;
+                free((char*)ub_txt);
+            }
+            ubuttons.buttons[i].uaction = uaction;
+            return;
+        }
+    }
     if(ubuttons.len == ubuttons.cap){
         ubuttons.cap *= 2;
         ubuttons.buttons = realloc(ubuttons.buttons, ubuttons.cap);
     }
     ubuttons.buttons[ubuttons.len].ub_txt = ub_txt;
     ubuttons.buttons[ubuttons.len].uaction = uaction;
+    ubuttons.buttons[ubuttons.len].allocated = allocated;
     ubuttons.buttons[ubuttons.len++].activated = 0;
 }
 
 void init_ubuttons(int cap){
     if(ubuttons.buttons){
         /* free memory for non-c_ubuttons defined ubuttons */
-        for(int i = 1+LENGTH(c_ubuttons); i < ubuttons.len; ++i){
-            free((char*)ubuttons.buttons[i].ub_txt);
-            if(ubuttons.buttons[i].uaction){
-                for(const char** j = ubuttons.buttons[i].uaction; *j; ++j){
-                    free((char*)*j);
-                }
-                free(ubuttons.buttons[i].uaction);
+        for(int i = 1; i < ubuttons.len; ++i){
+            if(i >= 1+LENGTH(c_ubuttons)){
+                free((char*)ubuttons.buttons[i].ub_txt);
             }
+            if(ubuttons.buttons[i].uaction && ubuttons.buttons[i].allocated)
+                free_uaction(ubuttons.buttons[i].uaction);
         }
         free(ubuttons.buttons);
     }
@@ -310,7 +330,7 @@ void init_ubuttons(int cap){
     ubuttons.cap = MAX(cap, ubuttons.cap);
     ubuttons.buttons = malloc(sizeof(struct ubutton_t)*cap);
 
-    insert_ubutton("***", NULL);
+    insert_ubutton("***", NULL, 0);
 }
 
 void update_ubuttons(){
@@ -325,7 +345,7 @@ void update_ubuttons(){
     init_ubuttons(10);
 
     for(int i = 0; i < LENGTH(c_ubuttons); ++i){
-        insert_ubutton(c_ubuttons[i].ub_txt, c_ubuttons[i].uaction);
+        insert_ubutton(c_ubuttons[i].ub_txt, c_ubuttons[i].uaction, 0);
     }
 
     while((br = getline(&ln, &sz, fp)) != EOF){
@@ -351,7 +371,7 @@ void update_ubuttons(){
         }
         adj_uaction[uact_len-1] = strdup(uaction);
 
-        insert_ubutton(strdup(ub_txt), adj_uaction);
+        insert_ubutton(strdup(ub_txt), adj_uaction, 1);
     }
     drawbars();
     fclose(fp);
