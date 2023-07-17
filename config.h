@@ -27,7 +27,7 @@ struct ubuttons{
 };
 
 /* ubuttons only appear with external monitors if not set */
-const _Bool force_ubuttons = 1;
+const _Bool force_ubuttons = 0;
 int cur_ubutton_press = -1;
 /* auto laptop/monitor mode */
 const _Bool asher_x220 = 1;

@@ -330,7 +330,7 @@ void init_ubuttons(int cap){
     ubuttons.cap = MAX(cap, ubuttons.cap);
     ubuttons.buttons = malloc(sizeof(struct ubutton_t)*cap);
 
-    insert_ubutton("***", NULL, 0);
+    insert_ubutton("**", NULL, 0);
 }
 
 void update_ubuttons(){
