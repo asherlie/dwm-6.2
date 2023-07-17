@@ -279,12 +279,9 @@ static Window root, wmcheckwin;
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
-/* initializes ubuttons with the read_cfg button
- * followed by cfg defined buttons
+/* initializes ubuttons with the read_cfg ubutton
+ * followed by config.h ubuttons, followed by cfg defined ubuttons
  */
-                    // okay, we'll hardcode a value of either 0 or INTMAX to be read extra UB cfg
-    /*{.ub_txt = "PC",    .uaction = airpod_con,        .activated = 0},*/
-
 void insert_ubutton(const char* ub_txt, const char** uaction){
     if(ubuttons.len == ubuttons.cap){
         ubuttons.cap *= 2;
