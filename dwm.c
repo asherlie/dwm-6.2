@@ -306,7 +306,8 @@ void insert_ubutton(const char* ub_txt, const char** uaction, _Bool allocated){
     }
     if(ubuttons.len == ubuttons.cap){
         ubuttons.cap *= 2;
-        ubuttons.buttons = realloc(ubuttons.buttons, ubuttons.cap);
+        ubuttons.buttons = realloc(ubuttons.buttons, ubuttons.cap*sizeof(struct ubutton_t));
+        memset(ubuttons.buttons+ubuttons.len, 0, (ubuttons.cap-ubuttons.len)*sizeof(struct ubutton_t));
     }
     ubuttons.buttons[ubuttons.len].ub_txt = ub_txt;
     ubuttons.buttons[ubuttons.len].uaction = uaction;
@@ -343,7 +344,7 @@ void update_ubuttons(){
 
     if(!fp)return;
 
-    init_ubuttons(10);
+    init_ubuttons(3);
 
     for(int i = 0; i < LENGTH(c_ubuttons); ++i){
         insert_ubutton(c_ubuttons[i].ub_txt, c_ubuttons[i].uaction, 0);
@@ -1694,6 +1695,7 @@ void press_ubutton(const Arg* arg){
     /* first ubutton is always read_cfg */
     if(cur_ubutton_press == 0){
         update_ubuttons();
+        return;
     }
     a.v = ubuttons.buttons[cur_ubutton_press].uaction;
     spawn(&a);
