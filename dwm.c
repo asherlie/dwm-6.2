@@ -330,6 +330,7 @@ void init_ubuttons(int cap){
     ubuttons.cap = MAX(cap, ubuttons.cap);
     ubuttons.buttons = malloc(sizeof(struct ubutton_t)*cap);
 
+    /* this doesn't require a special case because it's treated as a non-allocated duplicate */
     insert_ubutton("**", NULL, 0);
 }
 
