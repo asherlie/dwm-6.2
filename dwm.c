@@ -1692,6 +1692,8 @@ setfullscreen(Client *c, int fullscreen)
 void press_ubutton(const Arg* arg){
     Arg a;
     if(cur_ubutton_press == -1)return;
+    /* resetting this before exiting */
+    cur_ubutton_press = -1;
     /* first ubutton is always read_cfg */
     if(cur_ubutton_press == 0){
         update_ubuttons();
@@ -1699,7 +1701,6 @@ void press_ubutton(const Arg* arg){
     }
     a.v = ubuttons.buttons[cur_ubutton_press].uaction;
     spawn(&a);
-    cur_ubutton_press = -1;
 }
 
 void
