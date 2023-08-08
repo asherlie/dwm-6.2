@@ -343,7 +343,7 @@ void update_ubuttons(){
 
     if(!fp)return;
 
-    init_ubuttons(3);
+    init_ubuttons(20);
 
     for(int i = 0; i < LENGTH(c_ubuttons); ++i){
         insert_ubutton(c_ubuttons[i].ub_txt, c_ubuttons[i].uaction, 0);
