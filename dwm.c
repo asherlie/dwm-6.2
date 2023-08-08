@@ -290,7 +290,7 @@ void free_uaction(const char** uaction){
  * followed by config.h ubuttons, followed by cfg defined ubuttons
  */
 void insert_ubutton(const char* ub_txt, const char** uaction, _Bool allocated){
-    /* button 0 cannot be overwritten */
+    /* button 0 cannot be overwritten and is guaranteed to not be allocated on the heap */
     for(int i = 1; i < ubuttons.len; ++i){
         if(!strcmp(ubuttons.buttons[i].ub_txt, ub_txt)){
             if(ubuttons.buttons[i].allocated){
@@ -331,8 +331,7 @@ void init_ubuttons(int cap){
     ubuttons.cap = MAX(cap, ubuttons.cap);
     ubuttons.buttons = malloc(sizeof(struct ubutton_t)*cap);
 
-    /* this doesn't require a special case because it's treated as a non-allocated duplicate */
-    insert_ubutton("**", NULL, 0);
+    insert_ubutton(ubutton_refresh_icon, NULL, 0);
 }
 
 void update_ubuttons(){
@@ -1692,15 +1691,15 @@ setfullscreen(Client *c, int fullscreen)
 void press_ubutton(const Arg* arg){
     Arg a;
     if(cur_ubutton_press == -1)return;
-    /* resetting this before exiting */
-    cur_ubutton_press = -1;
     /* first ubutton is always read_cfg */
     if(cur_ubutton_press == 0){
         update_ubuttons();
-        return;
+        goto cleanup;
     }
     a.v = ubuttons.buttons[cur_ubutton_press].uaction;
     spawn(&a);
+cleanup:
+    cur_ubutton_press = -1;
 }
 
 void
