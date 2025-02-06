@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define br_fn "/sys/class/backlight/intel_backlight/brightness"
+
+#define MAX_BR 4648
+#define MIN_BR 200
+
+/* sets *br to current brightness and returns an open FILE* */
+FILE* get_br(int* br){
+    FILE* fp = fopen(br_fn, "r+");
+    if(!fp)return NULL;
+    if(fscanf(fp, "%i", br) != 1){
+        fclose(fp);
+        return NULL;
+    }
+    fseek(fp, 0L, SEEK_SET);
+    return fp;
+}
+
+/* if !dec, increase by amt - otherwise, decrease */
+_Bool br_set(_Bool dec, int amt){
+    int br;
+    FILE* fp;
+    if(!(fp = get_br(&br)))return -1;
+
+    int adj = br + ((dec) ? -amt : amt);
+
+    _Bool ret = 0;
+    /*printf("adj: %i\n", adj);*/
+    if(adj < MIN_BR)adj = MIN_BR;
+    else if(adj > MAX_BR)adj = MAX_BR;
+
+    /*printf("br: %i, %i\n", br);*/
+        ret = fprintf(fp, "%i\n", adj) == 1;
+    fclose(fp);
+    return ret;
+}
+
+int main(int a, char** b){
+    if(a < 3)return 1;
+
+    int amt = atoi(b[2]);
+
+    /*printf("amt: %i\n", amt);*/
+
+    switch(*b[1]){
+        case 'i':
+            br_set(0, amt);
+            break;
+        case 'd':
+            printf("%i\n", br_set(1, amt));
+            break;
+    }
+    return 0;
+}
