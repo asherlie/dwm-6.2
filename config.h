@@ -93,9 +93,16 @@ static const Layout layouts[] = {
 
 /* commands */
 
-static const char* mutecmd[] = { "/home/asher/bin/alsa_t/alsa_t", NULL };
-static const char* vol_up_cmd[]  = { "amixer", "-q", "sset", "Master", "10%+", NULL };
-static const char* vol_dwn_cmd[] = { "amixer", "-q", "sset", "Master", "10%-", NULL };
+/*
+ * static const char* mutecmd[] = { "/home/asher/bin/alsa_t/alsa_t", NULL };
+*/
+static const char* mutecmd[] = { "/home/asher/ashbin/vol/vol.sh", NULL };
+/* leaving below volume controls in case i switch back to alsa
+ * static const char* vol_up_cmd[]  = { "amixer", "-q", "sset", "Master", "10%+", NULL };
+ * static const char* vol_dwn_cmd[] = { "amixer", "-q", "sset", "Master", "10%-", NULL };
+*/
+static const char* vol_up_cmd[]  = { "/home/asher/ashbin/vol/vol.sh", "volup", NULL };
+static const char* vol_dwn_cmd[] = { "/home/asher/ashbin/vol/vol.sh", "voldwn", NULL }
 
 static const char* br_up_cmd[] = { "/home/asher/ashbin/br/br", "i", "0.1", NULL };
 static const char* br_down_cmd[] = { "/home/asher/ashbin/br/br", "d", "0.1", NULL };
