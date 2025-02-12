@@ -102,7 +102,7 @@ static const char* mutecmd[] = { "/home/asher/ashbin/vol/vol.sh", NULL };
  * static const char* vol_dwn_cmd[] = { "amixer", "-q", "sset", "Master", "10%-", NULL };
 */
 static const char* vol_up_cmd[]  = { "/home/asher/ashbin/vol/vol.sh", "volup", NULL };
-static const char* vol_dwn_cmd[] = { "/home/asher/ashbin/vol/vol.sh", "voldwn", NULL }
+static const char* vol_dwn_cmd[] = { "/home/asher/ashbin/vol/vol.sh", "voldwn", NULL };
 
 static const char* br_up_cmd[] = { "/home/asher/ashbin/br/br", "i", "0.1", NULL };
 static const char* br_down_cmd[] = { "/home/asher/ashbin/br/br", "d", "0.1", NULL };
